@@ -7,8 +7,7 @@
 
 // 192.168.0.11
 // 0xC0A8000B
-#define SERVER_ADDRESS "192.168.0.11"
-
+#define SERVER_ADDRESS "localhost"
 
 #define SERVER_PORT 5220
 
