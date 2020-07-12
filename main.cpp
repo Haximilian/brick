@@ -9,15 +9,15 @@
 #define SERVER_ADDRESS INADDR_ANY
 #define SERVER_PORT 5220
 
-void request_parser(struct sockaddr_in* client_address) {
+void request_parser(sockaddr_in* client_address) {
     std::cout << "HELLO WORLD" << std::endl;
 }
 
 int main(int argc, char** argv) {
     // allocate and set server address on stack
-    struct sockaddr_in server_address;
+    sockaddr_in server_address;
 
-    std::memset((void*) &server_address, 0, sizeof(struct sockaddr_in));
+    std::memset((void*) &server_address, 0, sizeof(sockaddr_in));
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(SERVER_ADDRESS);
     server_address.sin_port = htons(SERVER_PORT);
