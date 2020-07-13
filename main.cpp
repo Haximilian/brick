@@ -10,7 +10,22 @@
 #define SERVER_PORT 5220
 
 void request_parser(sockaddr_in* client_address) {
-    std::cout << "HELLO WORLD" << std::endl;
+    char* address_array = (char*) &(client_address->sin_addr.s_addr);
+
+    std::cout << "client address: ";
+    std::cout << (int)(address_array[0]) << ".";
+    std::cout << (int)(address_array[1]) << ".";
+    std::cout << (int) (address_array[2]) << ".";
+    std::cout << (int) (address_array[3]) << std::endl;
+
+    std::cout  << std::endl;
+
+    std::cout << "client port: ";
+    std::cout << ntohs(client_address->sin_port) << std::endl;
+
+    std::cout  << std::endl;
+
+    std::cout << "sleeping for 3 seconds..." << std::endl;
 }
 
 int main(int argc, char** argv) {
