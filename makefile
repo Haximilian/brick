@@ -5,7 +5,7 @@ client:
 	$(CC) $(CFLAGS) client.cpp -o client
 
 server:
-	$(CC) $(CFLAGS) main.cpp -o server
+	$(CC) $(CFLAGS) -I ./include main.cpp -o server
 
 clean:
 	rm ./client ./server

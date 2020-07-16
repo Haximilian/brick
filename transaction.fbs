@@ -1,0 +1,19 @@
+namespace Scheduler;
+
+table Read {
+    key:string;
+}
+
+table ReadResult {
+    status:bool;
+    value:string;
+}
+
+table Write {
+    key:string;
+    value:string;
+}
+
+table WriteStatus {
+    status:bool;
+}

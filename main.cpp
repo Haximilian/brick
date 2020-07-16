@@ -2,7 +2,7 @@
 #include <string>
 
 #include "server.cpp"
-// #include "transaction_generated.h"
+#include "transaction_generated.h"
 
 #include <arpa/inet.h>
 
