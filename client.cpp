@@ -5,6 +5,9 @@
 #include <arpa/inet.h>
 #include <string.h>
 
+#include <unistd.h>
+#include <iostream>
+
 // 192.168.0.11
 // 0xC0A8000B
 #define SERVER_ADDRESS "localhost"
@@ -21,6 +24,12 @@ int main(int argc, char** argv) {
     inet_pton(AF_INET, SERVER_ADDRESS, (void*) &server_addr.sin_addr);
 
     connect(conn_socket, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
+
+    char buffer[128];
+    memset(buffer, 0, 128);
+    read(conn_socket, buffer, 23);
+
+    std::cout << buffer;
     
     return EXIT_SUCCESS;
 }

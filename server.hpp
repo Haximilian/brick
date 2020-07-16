@@ -5,7 +5,7 @@ class StreamServer {
     public:
         StreamServer(
             sockaddr_in* server_address, 
-            void (*request_handler)(sockaddr_in* client_address));
+            void (*request_handler)(sockaddr_in* client_address, int conn_socket));
 
         void serve_forever();
 
@@ -20,7 +20,7 @@ class StreamServer {
 
         int accept_request(sockaddr* client_address, socklen_t* address_length);
 
-        void (*request_handler)(sockaddr_in* client_address);
+        void (*request_handler)(sockaddr_in* client_address, int conn_socket);
 
         void close_request(int connection);
 };

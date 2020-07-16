@@ -10,7 +10,7 @@
 
 StreamServer::StreamServer(
     sockaddr_in* server_address, 
-    void (*request_handler)(sockaddr_in* client_address)) 
+    void (*request_handler)(sockaddr_in* client_address, int conn_socket)) 
 {
     receive_socket = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -29,7 +29,7 @@ void StreamServer::serve_forever() {
         socklen_t address_length = sizeof(sockaddr_in);
         int connection = accept_request((sockaddr*) &client_address, &address_length);
         
-        request_handler(&client_address);
+        request_handler(&client_address, connection);
 
         close_request(connection);
     }
