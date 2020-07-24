@@ -2,31 +2,15 @@
 #include <string>
 
 #include "server.cpp"
+#include "utils.cpp"
 #include "transaction_generated.h"
 #include "flatbuffers/flatbuffers.h"
-
-#include <arpa/inet.h>
-
-// consider using cstdio
 
 #define SERVER_ADDRESS INADDR_ANY
 #define SERVER_PORT 5220
 
 void request_parser(sockaddr_in* client_address, int conn_socket) {
-    char* address_array = (char*) &(client_address->sin_addr.s_addr);
-
-    std::cout << "client address: ";
-    std::cout << (int)(address_array[0]) << ".";
-    std::cout << (int)(address_array[1]) << ".";
-    std::cout << (int) (address_array[2]) << ".";
-    std::cout << (int) (address_array[3]) << std::endl;
-
-    std::cout  << std::endl;
-
-    std::cout << "client port: ";
-    std::cout << ntohs(client_address->sin_port) << std::endl;
-
-    std::cout  << std::endl;
+    print_client_address(client_address);
 
     flatbuffers::FlatBufferBuilder builder;
 
