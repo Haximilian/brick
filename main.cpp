@@ -3,6 +3,7 @@
 
 #include "server.cpp"
 #include "transaction_generated.h"
+#include "flatbuffers/flatbuffers.h"
 
 #include <arpa/inet.h>
 
@@ -27,10 +28,21 @@ void request_parser(sockaddr_in* client_address, int conn_socket) {
 
     std::cout  << std::endl;
 
-    std::cout << "sleeping for 3 seconds..." << std::endl;
+    flatbuffers::FlatBufferBuilder builder;
 
-    char* sample_string = "Hello from Maximilian!\n";
-    write(conn_socket, (void*) sample_string, 23);
+    u_int32_t struct_size;
+    read(conn_socket, &struct_size, sizeof(u_int32_t));
+
+    // flushes on newline
+    std::cout << struct_size << std::endl;
+
+    void* serialized_obj = malloc(struct_size);
+    read(conn_socket, serialized_obj, struct_size);
+
+    // return object identifier
+    const char* identifier = flatbuffers::GetBufferIdentifier(serialized_obj, false);
+
+    std::cout << identifier << std::endl;
 }
 
 int main(int argc, char** argv) {

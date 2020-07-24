@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <iostream>
 
+#include "transaction_generated.h"
+
 // 192.168.0.11
 // 0xC0A8000B
 #define SERVER_ADDRESS "localhost"
@@ -25,11 +27,17 @@ int main(int argc, char** argv) {
 
     connect(conn_socket, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
 
-    char buffer[128];
-    memset(buffer, 0, 128);
-    read(conn_socket, buffer, 23);
+    flatbuffers::FlatBufferBuilder builder;
+    auto mykey = builder.CreateString("Maximilian");
+    auto myvalue = builder.CreateString("1 + 1 = 3");
+    auto keymsg = Scheduler::CreateWrite(builder, mykey, myvalue);
 
-    std::cout << buffer;
+    // assert identifier size is equal to size of identifier
+    builder.FinishSizePrefixed(keymsg, "WOPP");
+
+    std::cout << builder.GetSize() << std::endl;
+
+    write(conn_socket, builder.GetBufferPointer(), builder.GetSize());
     
     return EXIT_SUCCESS;
 }
