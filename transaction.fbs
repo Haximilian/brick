@@ -1,19 +1,37 @@
 namespace Scheduler;
 
+enum Action:byte {
+    Start = 0,
+    Commit = 1
+}
+
+table MetaCommand {
+    action:Action;
+}
+
+table MetaResult {
+    status:bool;
+    transaction:int;
+}
+
 table Read {
     key:string;
+    transaction:int;
 }
 
 table ReadResult {
     status:bool;
     value:string;
+    transaction:int;
 }
 
 table Write {
     key:string;
     value:string;
+    transaction:int;
 }
 
 table WriteStatus {
     status:bool;
+    transaction:int;
 }
