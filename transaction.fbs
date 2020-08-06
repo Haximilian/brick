@@ -1,8 +1,7 @@
 namespace Scheduler;
 
 enum Action:byte {
-    Start = 0,
-    Commit = 1
+    Start = 0
 }
 
 table MetaCommand {
@@ -33,5 +32,9 @@ table Write {
 
 table WriteStatus {
     status:bool;
+    transaction:int;
+}
+
+table Commit {
     transaction:int;
 }
