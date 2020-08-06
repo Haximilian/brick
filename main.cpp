@@ -9,24 +9,24 @@
 #define SERVER_ADDRESS INADDR_ANY
 #define SERVER_PORT 5220
 
-void request_parser(sockaddr_in* client_address, int conn_socket) {
+void request_handler(sockaddr_in* client_address, int conn_socket) {
     print_client_address(client_address);
 
-    flatbuffers::FlatBufferBuilder builder;
+    flatbuffers::uoffset_t struct_size;
+    read(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
 
-    u_int32_t struct_size;
-    read(conn_socket, &struct_size, sizeof(u_int32_t));
+    void* command = malloc(struct_size);
+    read(conn_socket, command, struct_size);
 
-    // flushes on newline
-    std::cout << struct_size << std::endl;
+    const char* command_type = flatbuffers::GetBufferIdentifier(command, false);
+    
+    if (strncmp(command_type, "WOPP", 4) == 0) {
+        const Scheduler::Write* myobj = flatbuffers::GetRoot<Scheduler::Write>(command);
+        std::cout << myobj->key()->str() << std::endl;
+    }
 
-    void* serialized_obj = malloc(struct_size);
-    read(conn_socket, serialized_obj, struct_size);
-
-    // return object identifier
-    const char* identifier = flatbuffers::GetBufferIdentifier(serialized_obj, false);
-
-    std::cout << identifier << std::endl;
+    free(command);
+    command = nullptr;
 }
 
 int main(int argc, char** argv) {
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     server_address.sin_addr.s_addr = htonl(SERVER_ADDRESS);
     server_address.sin_port = htons(SERVER_PORT);
 
-    StreamServer server = StreamServer(&server_address, &request_parser);
+    StreamServer server = StreamServer(&server_address, &request_handler);
 
     server.serve_forever();
 }
