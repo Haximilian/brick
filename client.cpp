@@ -33,11 +33,11 @@ int main(int argc, char** argv) {
     auto keymsg = Scheduler::CreateWrite(builder, mykey, myvalue);
 
     // assert identifier size is equal to size of identifier
-    builder.FinishSizePrefixed(keymsg, "WOPP");
+    builder.Finish(keymsg, "WOPP");
 
-    std::cout << builder.GetSize() << std::endl;
-
-    write(conn_socket, builder.GetBufferPointer(), builder.GetSize());
+    flatbuffers::uoffset_t struct_size = builder.GetSize();
+    write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
+    write(conn_socket, builder.GetBufferPointer(), struct_size);
     
     return EXIT_SUCCESS;
 }
