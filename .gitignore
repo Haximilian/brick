@@ -1,2 +1,10 @@
 .*
 !.gitignore
+
+flatc
+server
+client
+
+*.dSYM
+
+transaction_generated.h
