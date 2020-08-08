@@ -1,4 +1,4 @@
-namespace Scheduler;
+namespace scheduler;
 
 enum Action:byte {
     Start = 0

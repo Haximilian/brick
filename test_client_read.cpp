@@ -10,6 +10,8 @@
 
 #include "transaction_generated.h"
 
+#include "conn.cpp"
+
 #define SERVER_ADDRESS "localhost"
 #define SERVER_PORT 5220
 
@@ -25,16 +27,9 @@ int main(int argc, char** argv) {
     connect(conn_socket, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
 
     flatbuffers::FlatBufferBuilder builder;
-    auto mykey = builder.CreateString("Maximilian");
-    auto myvalue = builder.CreateString("1 + 1 = 3");
-    auto keymsg = scheduler::CreateWrite(builder, mykey, myvalue);
-
-    // assert identifier size is equal to size of identifier
-    builder.Finish(keymsg, "WOPP");
-
-    flatbuffers::uoffset_t struct_size = builder.GetSize();
-    write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
-    write(conn_socket, builder.GetBufferPointer(), struct_size);
     
+    Connection dbconn = Connection(conn_socket, &builder);
+    dbconn.read(100, "Colour");
+
     return EXIT_SUCCESS;
 }

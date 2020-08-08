@@ -3,6 +3,8 @@
 
 #include "server.cpp"
 #include "utils.cpp"
+#include "conn.cpp"
+
 #include "transaction_generated.h"
 #include "flatbuffers/flatbuffers.h"
 
@@ -21,8 +23,10 @@ void request_handler(sockaddr_in* client_address, int conn_socket) {
     const char* command_type = flatbuffers::GetBufferIdentifier(command, false);
     
     if (strncmp(command_type, "WOPP", 4) == 0) {
-        const Scheduler::Write* myobj = flatbuffers::GetRoot<Scheduler::Write>(command);
+        const scheduler::Write* myobj = flatbuffers::GetRoot<scheduler::Write>(command);
         std::cout << myobj->key()->str() << std::endl;
+    } else if (strncmp(command_type, "RMSG", 4) == 0) {
+        std::cout << "Received RMSG" << std::endl;
     }
 
     free(command);
