@@ -2,9 +2,10 @@
 
 #include "conn.hpp"
 
-Connection::Connection(int conn_socket, flatbuffers::FlatBufferBuilder* builder) {
+Connection::Connection(int conn_socket, flatbuffers::FlatBufferBuilder* builder, int transaction) {
     this->conn_socket = conn_socket;
     this->builder = builder;
+    this->transaction = transaction;
 }
 
 int start() {
@@ -17,7 +18,7 @@ int start() {
     return 0;
 }
 
-scheduler::ReadResult* Connection::read(int transaction, std::string key) {
+scheduler::ReadResult* Connection::read(std::string key) {
     auto k = builder->CreateString(key);
     auto r = scheduler::CreateRead(*builder, k, transaction);
     builder->Finish(r, "RMSG");
@@ -28,5 +29,9 @@ scheduler::ReadResult* Connection::read(int transaction, std::string key) {
 
     write(conn_socket, builder->GetBufferPointer(), struct_size);
 
+    return nullptr;
+}
+
+scheduler::WriteStatus* Connection::store(std::string key, std::string value) {
     return nullptr;
 }
