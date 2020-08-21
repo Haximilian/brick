@@ -11,6 +11,8 @@
 #define SERVER_ADDRESS INADDR_ANY
 #define SERVER_PORT 5220
 
+uint32_t current_transaction = 0;
+
 void request_handler(sockaddr_in* client_address, int conn_socket) {
     print_client_address(client_address);
 
@@ -27,6 +29,10 @@ void request_handler(sockaddr_in* client_address, int conn_socket) {
         std::cout << myobj->key()->str() << std::endl;
     } else if (strncmp(command_type, "RMSG", 4) == 0) {
         std::cout << "Received RMSG" << std::endl;
+    } else if (strncmp(command_type, "META", 4) == 0) {
+        uint32_t to_send = htons(current_transaction);
+        current_transaction += 1;
+        write(conn_socket, &to_send, sizeof(uint32_t));
     }
 
     free(command);

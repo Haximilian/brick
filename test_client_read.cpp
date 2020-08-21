@@ -28,8 +28,13 @@ int main(int argc, char** argv) {
 
     flatbuffers::FlatBufferBuilder builder;
     
-    Connection dbconn = Connection(conn_socket, &builder, 100);
-    dbconn.read("Colour");
+    Connection dbconn = Connection(conn_socket, &builder);
+
+    dbconn.start();
+
+    printf("%u\n", dbconn.transaction);
+
+    dbconn.read_value("Colour");
 
     return EXIT_SUCCESS;
 }

@@ -16,4 +16,4 @@ test_client_read:
 	$(CC) $(CFLAGS) -I ./include test_client_read.cpp -o test_client_read
 
 clean:
-	rm ./transaction_generated.h ./client ./server
+	rm ./transaction_generated.h ./client ./server ./test_client_read

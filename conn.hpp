@@ -4,16 +4,17 @@
 
 class Connection {
     public:
+        uint32_t transaction;
+
         Connection(
             int conn_socket,
-            flatbuffers::FlatBufferBuilder* builder,
-            int transaction);
+            flatbuffers::FlatBufferBuilder* builder);
 
-        int start();
+        void start();
 
-        scheduler::ReadResult* read(std::string key);
+        scheduler::ReadResult* read_value(std::string key);
 
-        scheduler::WriteStatus* store(std::string key, std::string value);
+        scheduler::WriteStatus* write_value(std::string key, std::string value);
 
         void commit(int transaction);
         
@@ -21,6 +22,4 @@ class Connection {
         int conn_socket;
         
         flatbuffers::FlatBufferBuilder* builder;
-
-        int transaction;
 };

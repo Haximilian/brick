@@ -2,23 +2,35 @@
 
 #include "conn.hpp"
 
-Connection::Connection(int conn_socket, flatbuffers::FlatBufferBuilder* builder, int transaction) {
+Connection::Connection(int conn_socket, flatbuffers::FlatBufferBuilder* builder) {
     this->conn_socket = conn_socket;
     this->builder = builder;
-    this->transaction = transaction;
 }
 
-int start() {
+void Connection::start() {
     // clear buffer builder
+    builder->Clear();
     // create flatbuffer
-    // send flatbuffer
-    // fcntl, poll, epoll on socket
-    // deserialize
-    // return transaction number
-    return 0;
+    auto c = scheduler::CreateMetaCommand(*builder, scheduler::Action::Action_Start);
+    builder->Finish(c, "META");
+
+    flatbuffers::uoffset_t struct_size = builder->GetSize();
+    flatbuffers::uoffset_t send_size = htons(struct_size);
+    write(conn_socket, &send_size, sizeof(flatbuffers::uoffset_t));
+
+    write(conn_socket, builder->GetBufferPointer(), struct_size);
+
+    // define transaction identifier type
+    uint32_t receive;
+    read(conn_socket, &receive, sizeof(uint32_t));
+    transaction = ntohs(receive);
 }
 
-scheduler::ReadResult* Connection::read(std::string key) {
+scheduler::ReadResult* Connection::read_value(std::string key) {
+    // assert that transaction number has been set...
+    
+    builder->Clear();
+
     auto k = builder->CreateString(key);
     auto r = scheduler::CreateRead(*builder, k, transaction);
     builder->Finish(r, "RMSG");
@@ -32,6 +44,6 @@ scheduler::ReadResult* Connection::read(std::string key) {
     return nullptr;
 }
 
-scheduler::WriteStatus* Connection::store(std::string key, std::string value) {
+scheduler::WriteStatus* Connection::write_value(std::string key, std::string value) {
     return nullptr;
 }
