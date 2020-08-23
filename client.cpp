@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "transaction_generated.h"
+#include "rpc.hpp"
 
 #define SERVER_ADDRESS "localhost"
 #define SERVER_PORT 5220
@@ -29,11 +30,14 @@ int main(int argc, char** argv) {
     auto myvalue = builder.CreateString("1 + 1 = 3");
     auto keymsg = scheduler::CreateWrite(builder, mykey, myvalue);
 
-    // assert identifier size is equal to size of identifier
-    builder.Finish(keymsg, "WOPP");
+    builder.Finish(keymsg);
 
-    flatbuffers::uoffset_t struct_size = builder.GetSize();
+    uint32_t struct_size = htonl((uint32_t) builder.GetSize());
     write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
+
+    uint32_t command_type = htonl(rpc::write_value);
+    write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
+
     write(conn_socket, builder.GetBufferPointer(), struct_size);
     
     return EXIT_SUCCESS;

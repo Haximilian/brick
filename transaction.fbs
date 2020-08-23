@@ -1,18 +1,5 @@
 namespace scheduler;
 
-enum Action:byte {
-    Start = 0
-}
-
-table MetaCommand {
-    action:Action;
-}
-
-table MetaResult {
-    status:bool;
-    transaction:int;
-}
-
 table Read {
     key:string;
     transaction:int;
@@ -32,9 +19,5 @@ table Write {
 
 table WriteStatus {
     status:bool;
-    transaction:int;
-}
-
-table Commit {
     transaction:int;
 }

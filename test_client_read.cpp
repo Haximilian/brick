@@ -10,7 +10,7 @@
 
 #include "transaction_generated.h"
 
-#include "conn.cpp"
+#include "connection.cpp"
 
 #define SERVER_ADDRESS "localhost"
 #define SERVER_PORT 5220
@@ -30,11 +30,9 @@ int main(int argc, char** argv) {
     
     Connection dbconn = Connection(conn_socket, &builder);
 
-    dbconn.start();
+    dbconn.start_transaction();
 
-    printf("%u\n", dbconn.transaction);
-
-    dbconn.read_value("Colour");
+    dbconn.read_value("Maximilian");
 
     return EXIT_SUCCESS;
 }

@@ -1,5 +1,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <poll.h>
+
+#define BACKLOG 8
+#define MAXIMUM_SOCKETS 128
+#define WATCH_EVENTS POLLIN
 
 class StreamServer {
     public:
@@ -13,6 +18,14 @@ class StreamServer {
         sockaddr_in* server_address;
         
         int receive_socket;
+
+        struct pollfd wait_set[MAXIMUM_SOCKETS];
+
+        int wait_set_size;
+
+        void add_wait_set(int socket);
+
+        void remove_wait_set(int socket);
 
         void bind_server();
 
