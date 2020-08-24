@@ -9,7 +9,8 @@
 #include <iostream>
 
 #include "transaction_generated.h"
-#include "rpc.hpp"
+
+#include "connection.cpp"
 
 #define SERVER_ADDRESS "localhost"
 #define SERVER_PORT 5220
@@ -26,19 +27,12 @@ int main(int argc, char** argv) {
     connect(conn_socket, (struct sockaddr*) &server_addr, sizeof(struct sockaddr_in));
 
     flatbuffers::FlatBufferBuilder builder;
-    auto mykey = builder.CreateString("Maximilian");
-    auto myvalue = builder.CreateString("1 + 1 = 3");
-    auto keymsg = scheduler::CreateWrite(builder, mykey, myvalue);
-
-    builder.Finish(keymsg);
-
-    uint32_t struct_size = htonl((uint32_t) builder.GetSize());
-    write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
-
-    uint32_t command_type = htonl(rpc::write_value);
-    write(conn_socket, &struct_size, sizeof(flatbuffers::uoffset_t));
-
-    write(conn_socket, builder.GetBufferPointer(), struct_size);
     
+    Connection dbconn = Connection(conn_socket, &builder);
+
+    dbconn.start_transaction();
+
+    dbconn.read_value("Maximilian");
+
     return EXIT_SUCCESS;
 }
