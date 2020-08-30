@@ -26,6 +26,7 @@ void Connection::start_transaction()
 
     transaction = ntohl(received_value);
 
+    std::cout << "client | transaction: ";
     std::cout << transaction << std::endl;
 }
 
