@@ -1,10 +1,11 @@
 #include <netinet/in.h>
-#include <unistd.h>
 
 #include "transaction_generated.h"
 
 #include "rpc.hpp"
 #include "utils.hpp"
+
+#include "brick.cpp"
 
 void router(sockaddr_in* client_address, int conn_socket) {
     print_client_address(client_address);
@@ -26,7 +27,7 @@ void router(sockaddr_in* client_address, int conn_socket) {
     {
         case rpc::start_transaction: {
             std::cout << "start received" << std::endl;
-            uint32_t default_transaction = htonl(7);
+            uint32_t default_transaction = htonl(Brick::start_transaction());
             write(conn_socket, &default_transaction, sizeof(default_transaction));
             break;
         }
