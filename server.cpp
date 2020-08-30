@@ -1,7 +1,7 @@
 #include <cstring>
 
 #include <unistd.h>
-
+#include <cassert>
 #include "server.hpp"
 
 StreamServer::StreamServer(
@@ -23,7 +23,8 @@ StreamServer::StreamServer(
 
 void StreamServer::add_wait_set(int socket)
 {
-    // assume wait_set_size < MAXIMUM_SOCKETS
+    assert(wait_set_size < MAXIMUM_SOCKETS);
+    
     for (int i = 0; i < MAXIMUM_SOCKETS; i++) {
         if (this->wait_set[i].fd == -1) {
             this->wait_set[i].fd = socket;
@@ -39,7 +40,6 @@ void StreamServer::add_wait_set(int socket)
 
 void StreamServer::remove_wait_set(int socket)
 {
-    // assume wait_set_size < MAXIMUM_SOCKETS
     for (int i = 0; i < MAXIMUM_SOCKETS; i++) {
         if (this->wait_set[i].fd == socket) {
             this->wait_set[i].fd = -1;
@@ -97,7 +97,7 @@ int StreamServer::accept_request(sockaddr* client_address, socklen_t* address_le
     int socket = -1;
 
     if (wait_set_size < MAXIMUM_SOCKETS) {
-        int socket = accept(this->receive_socket, client_address, address_length);
+        socket = accept(this->receive_socket, client_address, address_length);
 
         add_wait_set(socket);
     }
@@ -108,5 +108,6 @@ int StreamServer::accept_request(sockaddr* client_address, socklen_t* address_le
 void StreamServer::close_request(int socket)
 {
     remove_wait_set(socket);
+
     close(socket);
 }
