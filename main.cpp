@@ -1,6 +1,5 @@
 #include "server.cpp"
 #include "utils.cpp"
-#include "connection.cpp"
 #include "router.cpp"
 
 #include "transaction_generated.h"

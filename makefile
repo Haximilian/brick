@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11 -g
 
-all: flatbuffers server client
+all: flatbuffers server test_client
 
 flatbuffers:
 	./flatc --cpp transaction.fbs
@@ -9,8 +9,9 @@ flatbuffers:
 server:
 	$(CC) $(CFLAGS) -I ./include main.cpp -o server
 
-client:
-	$(CC) $(CFLAGS) -I ./include client.cpp -o client
+test_client:
+	$(MAKE) -C ./client
 
 clean:
-	rm ./transaction_generated.h ./server ./client
+	rm ./transaction_generated.h ./server
+	$(MAKE) clean -C ./client
